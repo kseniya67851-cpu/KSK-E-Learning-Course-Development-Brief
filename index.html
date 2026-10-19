@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бриф на разработку электронного курса</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --ksk-base:#50BBB4;
+    --ksk-teal:#00C9C0;
+    --ksk-blue:#6E9ED4;
+    --ksk-red:#E5004F;
+    --ksk-grey:#4e4953;
+    --grad: linear-gradient(135deg, var(--ksk-base) 0%, var(--ksk-teal) 45%, var(--ksk-blue) 100%);
+  }
+  html[data-theme="dark"]{
+    --bg:#1b1d21;
+    --bg-2:#232629;
+    --glass-bg: rgba(255,255,255,0.045);
+    --glass-bg-strong: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.09);
+    --text:#f2f3f4;
+    --text-dim:#a3a8ad;
+    --text-faint:#6c7176;
+    --input-bg: rgba(255,255,255,0.04);
+    --input-border: rgba(255,255,255,0.12);
+    --card-shadow: 0 20px 60px -25px rgba(0,0,0,0.65);
+  }
+  html[data-theme="light"]{
+    --bg:#eef0f2;
+    --bg-2:#e4e7ea;
+    --glass-bg: rgba(255,255,255,0.55);
+    --glass-bg-strong: rgba(255,255,255,0.75);
+    --glass-border: rgba(20,25,30,0.08);
+    --text:#20232a;
+    --text-dim:#5b6068;
+    --text-faint:#8b9098;
+    --input-bg: rgba(255,255,255,0.7);
+    --input-border: rgba(20,25,30,0.12);
+    --card-shadow: 0 20px 50px -25px rgba(30,35,45,0.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Montserrat',sans-serif;
+    background:
+      radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--ksk-base) 16%, transparent), transparent 42%),
+      radial-gradient(circle at 88% 0%, color-mix(in srgb, var(--ksk-blue) 14%, transparent), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    transition:background .4s ease, color .4s ease;
+    min-height:100vh;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+
+  /* THEME TOGGLE */
+  .theme-toggle{
+    position:fixed; top:22px; right:26px; z-index:100;
+    width:52px;height:52px;border-radius:16px;
+    background:var(--glass-bg-strong);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer; box-shadow:var(--card-shadow);
+    transition:transform .25s ease, background .3s ease;
+  }
+  .theme-toggle:hover{transform:translateY(-2px) scale(1.04);}
+  .theme-toggle svg{width:22px;height:22px;stroke:var(--text);transition:stroke .3s;}
+
+  /* PROGRESS BAR */
+  .progress-shell{
+    position:fixed; top:0; left:0; width:100%; height:4px; z-index:99;
+    background:rgba(120,120,120,0.15);
+  }
+  .progress-fill{
+    height:100%; width:0%; background:var(--grad);
+    box-shadow:0 0 14px 1px color-mix(in srgb, var(--ksk-teal) 60%, transparent);
+    transition:width .35s ease;
+  }
+
+  /* HERO */
+  .hero{padding:100px 0 60px; position:relative;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--text-dim); font-weight:600;
+    padding:8px 16px; border-radius:100px;
+    background:var(--glass-bg); border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px);
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--grad);}
+  h1.hero-title{
+    font-size:clamp(34px, 5.4vw, 62px);
+    font-weight:800; line-height:1.04; letter-spacing:-0.02em;
+    margin:26px 0 18px; max-width:820px;
+  }
+  h1.hero-title .accent{
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-sub{
+    font-size:16.5px; color:var(--text-dim); max-width:620px; line-height:1.65; font-weight:500;
+  }
+
+  /* BENTO STAT ROW */
+  .bento{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:44px;
+  }
+  .bento .glass{
+    padding:22px 22px; border-radius:22px;
+  }
+  .bento .glass .num{font-size:28px;font-weight:800;}
+  .bento .glass .lbl{font-size:12.5px;color:var(--text-dim);margin-top:4px;font-weight:600;}
+  .bento .glass.wide{grid-column:span 2;}
+  .glass{
+    background:var(--glass-bg);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    box-shadow:var(--card-shadow);
+    border-radius:26px;
+    transition:transform .3s ease, background .3s ease, border-color .3s ease;
+  }
+  .glass:hover{border-color:color-mix(in srgb, var(--ksk-base) 45%, var(--glass-border));}
+
+  /* TOP META FIELDS */
+  .meta-card{margin-top:36px; padding:28px; display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  .requester-card{margin-top:22px;}
+  .requester-card .meta-heading{grid-column:1 / -1; display:flex; align-items:center; justify-content:space-between; padding-bottom:2px;}
+  .requester-card .meta-heading .field-label{font-size:17px;}
+  .requester-card input{width:100%; min-width:0; max-width:100%; display:block;}
+  .requester-card input[type=date]{-webkit-appearance:none; appearance:none;}
+  @media (max-width:720px){ .meta-card{grid-template-columns:1fr;} .requester-card .meta-heading{grid-column:auto;} .bento{grid-template-columns:repeat(2,1fr);} }
+
+  /* SECTIONS */
+  .section{padding:54px 0;}
+  .section-head{display:flex; align-items:baseline; gap:18px; margin-bottom:26px;}
+  .section-num{
+    font-size:14px; font-weight:800; letter-spacing:.05em;
+    padding:5px 12px; border-radius:9px;
+    background:var(--grad); color:#0d1210;
+  }
+  .section-title{font-size:23px; font-weight:800; letter-spacing:-0.01em;}
+  .section-card{padding:8px 6px 6px;}
+
+  .field{
+    padding:24px 26px; border-radius:20px;
+    border-bottom:1px solid var(--glass-border);
+  }
+  .field:last-child{border-bottom:none;}
+  .field-head{display:flex; align-items:flex-start; gap:10px; justify-content:space-between;}
+  .field-label{font-size:15px; font-weight:700; line-height:1.4; max-width:80%;}
+  .field-label .qn{color:var(--ksk-base); margin-right:6px;}
+  .optional-tag{
+    font-size:10.5px; font-weight:600; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:.06em; white-space:nowrap; margin-top:3px;
+  }
+  .hint-btn{
+    flex:0 0 auto; width:24px;height:24px;border-radius:50%;
+    border:1px solid var(--input-border); background:var(--input-bg);
+    color:var(--text-dim); font-size:12px; font-weight:800; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:.25s;
+  }
+  .hint-btn:hover{background:var(--grad); color:#0d1210; border-color:transparent;}
+  .hint-text{
+    max-height:0; overflow:hidden; opacity:0; transition:max-height .3s ease, opacity .25s ease, margin .3s ease;
+    font-size:13px; color:var(--text-dim); line-height:1.55;
+    border-left:2px solid var(--ksk-base); padding-left:12px; margin-top:0;
+  }
+  .hint-text.open{max-height:200px; opacity:1; margin-top:12px;}
+
+  .field-body{margin-top:16px;}
+  textarea, input[type=text], input[type=date], input[type=number]{
+    width:100%; padding:13px 15px; border-radius:12px;
+    background:var(--input-bg); border:1px solid var(--input-border);
+    color:var(--text); font-family:inherit; font-size:14px; font-weight:500;
+    outline:none; transition:border-color .25s, background .25s, box-shadow .25s;
+  }
+  textarea::placeholder, input::placeholder{color:var(--text-faint);}
+  textarea{min-height:78px; resize:vertical;}
+  textarea.lg{min-height:130px;}
+  textarea:focus, input:focus{
+    border-color:var(--ksk-base);
+    box-shadow:0 0 0 4px color-mix(in srgb, var(--ksk-base) 18%, transparent);
+  }
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .conditional-field{display:none;}
+  .conditional-field.visible{display:block;}
+  @media (max-width:600px){.row2{grid-template-columns:1fr;}}
+
+  .choice-group{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    position:relative;
+  }
+  .chip input{position:absolute; opacity:0; inset:0; cursor:pointer; margin:0;}
+  .chip span{
+    display:inline-flex; align-items:center; gap:7px;
+    padding:10px 16px; border-radius:100px; font-size:13.5px; font-weight:600;
+    background:var(--input-bg); border:1px solid var(--input-border);
+    color:var(--text-dim); cursor:pointer; transition:.25s; user-select:none;
+  }
+  .chip input:checked + span{
+    background:var(--grad); color:#0d1210; border-color:transparent;
+  }
+  .chip:hover span{border-color:var(--ksk-base);}
+  .course-format-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .course-format{width:100%;}
+  .course-format span{width:100%;min-height:92px;border-radius:18px;padding:15px 17px;display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
+  .course-format span strong{font-size:13.5px;color:var(--text);}
+  .course-format span small{font-size:11.5px;line-height:1.45;color:var(--text-dim);font-weight:500;}
+  .course-format input:checked + span strong,.course-format input:checked + span small{color:#0d1210;}
+  @media (max-width:600px){.course-format-group{grid-template-columns:1fr;}}
+
+  /* BUTTONS */
+  .actions{
+    margin-top:14px; padding:36px 0 90px;
+    display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:center;
+  }
+  .btn{
+    border:none; cursor:pointer; font-family:inherit; font-weight:700; font-size:15px;
+    padding:17px 34px; border-radius:100px; display:inline-flex; align-items:center; gap:10px;
+    transition:transform .25s ease, box-shadow .3s ease, background .3s ease, color .3s ease;
+  }
+  .btn-primary{
+    background:var(--grad); background-size:180% 180%; background-position:0% 50%;
+    color:#0c1211; box-shadow:0 14px 34px -12px color-mix(in srgb, var(--ksk-teal) 65%, transparent);
+  }
+  .btn-primary:hover{background-position:100% 50%; transform:translateY(-3px); box-shadow:0 18px 40px -10px color-mix(in srgb, var(--ksk-teal) 80%, transparent);}
+  .btn-ghost{
+    background:var(--glass-bg); color:var(--text); border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px);
+  }
+  .btn-ghost:hover{border-color:var(--ksk-red); color:var(--ksk-red); transform:translateY(-3px);}
+
+  footer{text-align:center; padding:0 0 50px; color:var(--text-faint); font-size:12.5px;}
+
+</style>
+</head>
+<body>
+
+<div class="progress-shell"><div class="progress-fill" id="progressFill"></div></div>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <svg id="iconMoon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg id="iconSun" style="display:none" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+</button>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="eyebrow"><span class="dot"></span>Бриф · Электронное обучение</span>
+    <h1 class="hero-title">Бриф на разработку <span class="accent">электронного курса</span></h1>
+    <p class="hero-sub">Заполните поля, которые для вас актуальны — все они необязательны. Возле каждого вопроса есть подсказка (иконка «?»), поясняющая, зачем он нужен. Готовый бриф можно выгрузить в Word одной кнопкой.</p>
+
+    <div class="bento">
+      <div class="glass wide">
+        <div class="num" id="progressNum">0%</div>
+        <div class="lbl">Заполнено полей брифа</div>
+      </div>
+      <div class="glass"><div class="num">6</div><div class="lbl">Разделов брифа</div></div>
+      <div class="glass"><div class="num">33</div><div class="lbl">Вопросов всего</div></div>
+    </div>
+
+    <div class="glass meta-card requester-card">
+      <div class="meta-heading">
+        <div class="field-label">Данные заказчика</div>
+        <div class="optional-tag">не обязательно</div>
+      </div>
+      <div class="field-body" style="margin-top:0;">
+        <label class="field-label" style="display:block;margin-bottom:8px;">ФИО заказчика</label>
+        <input type="text" data-label="ФИО заказчика" placeholder="Введите ФИО">
+      </div>
+      <div class="field-body" style="margin-top:0;">
+        <label class="field-label" style="display:block;margin-bottom:8px;">Должность заказчика</label>
+        <input type="text" data-label="Должность заказчика" placeholder="Введите должность">
+      </div>
+      <div class="field-body" style="margin-top:0;">
+        <label class="field-label" style="display:block;margin-bottom:8px;">Структурное подразделение</label>
+        <input type="text" data-label="Структурное подразделение" placeholder="Например: Департамент обучения">
+      </div>
+      <div class="field-body" style="margin-top:0;">
+        <label class="field-label" style="display:block;margin-bottom:8px;">Общество</label>
+        <input type="text" data-label="Общество" placeholder="Введите название общества">
+      </div>
+      <div class="field-body" style="margin-top:0;">
+        <label class="field-label" style="display:block;margin-bottom:8px;">Информация как связаться</label>
+        <input type="text" data-label="Информация как связаться" placeholder="Телефон, e-mail">
+      </div>
+      <div class="field-body" style="margin-top:0;">
+        <label class="field-label" style="display:block;margin-bottom:8px;">Дата заполнения</label>
+        <input type="date" data-label="Дата заполнения">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= SECTION 1 ================= -->
+  <div class="section" data-section-title="1. Вводная информация">
+    <div class="section-head"><span class="section-num">01</span><span class="section-title">Вводная информация</span></div>
+    <div class="glass section-card">
+
+      <div class="field" data-label="1. Название курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">1.</span>Название курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Рабочее или финальное название курса, как оно должно отображаться в системе дистанционного обучения.</div>
+        <div class="field-body"><input type="text" placeholder="Введите название курса"></div>
+      </div>
+
+      <div class="field" data-label="2. Цель курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">2.</span>Цель курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Какого результата должен достичь сотрудник после прохождения курса — знания, навыки, изменение поведения.</div>
+        <div class="field-body"><textarea placeholder="Опишите цель курса"></textarea></div>
+      </div>
+
+      <div class="field" data-label="3. Какие задачи должен решить курс после его публикации в системе ДО">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">3.</span>Какие задачи должен решить курс после его публикации в системе ДО</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Бизнес-задачи: например, снизить количество ошибок, ускорить адаптацию, выполнить требования регулятора.</div>
+        <div class="field-body"><textarea placeholder="Опишите задачи курса"></textarea></div>
+      </div>
+
+      <div class="field" data-label="4. Опишите целевую аудиторию (ЦА)">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">4.</span>Опишите целевую аудиторию (ЦА)</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Должности, отделы, уровень подготовки и опыт работы сотрудников, для которых предназначен курс.</div>
+        <div class="field-body"><textarea placeholder="Опишите ЦА"></textarea></div>
+      </div>
+
+      <div class="field" data-label="5. Укажите средний возраст ЦА">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">5.</span>Укажите средний возраст ЦА</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Примерный возрастной диапазон основной аудитории, например 25–40 лет.</div>
+        <div class="field-body"><input type="text" placeholder="Например: 25–40 лет"></div>
+      </div>
+
+      <div class="field" data-label="6. Укажите пол ЦА">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">6.</span>Укажите пол ЦА</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Примерное процентное соотношение аудитории по полу, если это важно для стиля подачи материала.</div>
+        <div class="field-body row2">
+          <input type="number" min="0" max="100" placeholder="Мужчины, %">
+          <input type="number" min="0" max="100" placeholder="Женщины, %">
+        </div>
+      </div>
+
+      <div class="field" data-label="7. Оцените уровень знаний у ЦА на начало курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">7.</span>Оцените уровень знаний у ЦА на начало курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Насколько аудитория уже знакома с темой курса до его прохождения.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q7"><span>Начальный</span></label>
+          <label class="chip"><input type="radio" name="q7"><span>Средний</span></label>
+          <label class="chip"><input type="radio" name="q7"><span>Продвинутый</span></label>
+        </div>
+      </div>
+
+      <div class="field" data-label="8. Структура (скелет) курса, логика изложения контента">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">8.</span>Структура (скелет) курса, логика изложения контента</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Опишите разделы/главы курса и порядок подачи материала — это станет основой сценария.</div>
+        <div class="field-body"><textarea class="lg" placeholder="Опишите структуру курса"></textarea></div>
+      </div>
+
+      <div class="field" data-label="9. Выбор формата ДО курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">9.</span>Выбор формата ДО курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Можно выбрать один или несколько форматов подачи материала.</div>
+        <div class="field-body">
+          <div class="choice-group course-format-group" style="margin-bottom:10px;">
+            <label class="chip course-format"><input type="checkbox"><span><strong>Слайдовый курс</strong><small>Последовательная подача материала на экранах с текстом, иллюстрациями и интерактивными элементами.</small></span></label>
+            <label class="chip course-format"><input type="checkbox"><span><strong>Лонгрид</strong><small>Обучение в формате длинной веб-статьи: текст, изображения, схемы, видео и интерактивные вставки.</small></span></label>
+            <label class="chip course-format"><input type="checkbox"><span><strong>Диалоговый тренажёр</strong><small>Практика в формате диалога или сценария, где сотрудник выбирает действия и получает обратную связь.</small></span></label>
+            <label class="chip course-format"><input type="checkbox"><span><strong>Видео-курс</strong><small>Обучение, построенное преимущественно на видеоматериалах: лекциях, демонстрациях, интервью или анимации.</small></span></label>
+          </div>
+          <input type="text" placeholder="Другое (если есть)">
+        </div>
+      </div>
+
+      <div class="field" data-label="10. Укажите желаемую дату запуска курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">10.</span>Укажите желаемую дату запуска курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Дедлайн, к которому курс должен быть готов и опубликован.</div>
+        <div class="field-body"><input type="date"></div>
+      </div>
+
+      <div class="field" data-label="11. Контакт ответственного за консолидированную обратную связь">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">11.</span>Укажите контактную информацию ответственного за предоставление консолидированной обратной связи</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Кто собирает и передаёт разработчику единую обратную связь от всех экспертов.</div>
+        <div class="field-body"><input type="text" placeholder="ФИО, e-mail / телефон"></div>
+      </div>
+
+      <div class="field" data-label="12. Контакт ответственного за согласование курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">12.</span>Укажите контактную информацию ответственного за согласование курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Кто финально утверждает готовый курс перед публикацией.</div>
+        <div class="field-body"><input type="text" placeholder="ФИО, e-mail / телефон"></div>
+      </div>
+
+      <div class="field" data-label="13. Список экспертов и участников процесса создания курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">13.</span>Список экспертов и участников процесса создания курса с указанием контактной информации</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">ФИО, роль (эксперт по теме, методист и т.д.), контакты каждого участника.</div>
+        <div class="field-body"><textarea placeholder="Перечислите экспертов и участников"></textarea></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SECTION 2 ================= -->
+  <div class="section" data-section-title="2. Контент">
+    <div class="section-head"><span class="section-num">02</span><span class="section-title">Контент</span></div>
+    <div class="glass section-card">
+
+      <div class="field" data-label="14. Планируются изменения в курс в будущем">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">14.</span>Планируется в будущем вносить какие-либо изменения в курс и надо ли это предусмотреть</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Нужна ли гибкая структура, которую легко обновлять — например, при изменении регламентов.</div>
+        <div class="field-body">
+          <div class="choice-group" style="margin-bottom:10px;">
+            <label class="chip"><input type="radio" name="q15"><span>Да</span></label>
+            <label class="chip"><input type="radio" name="q15"><span>Нет</span></label>
+          </div>
+          <input type="text" placeholder="Уточнение (если нужно)">
+        </div>
+      </div>
+
+      <div class="field" data-label="15. Требуется ли возможность скачать материалы курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">15.</span>Требуется ли предоставить пользователю возможность скачать материалы курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Например, PDF-конспект, чек-лист или презентация для скачивания.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q16"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q16"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="field" data-label="16. Форма обращения к ЦА">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">16.</span>Форма обращения к ЦА</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Как текст/диктор курса должен обращаться к обучающемуся.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q18"><span>На Вы</span></label>
+          <label class="chip"><input type="radio" name="q18"><span>На ты</span></label>
+          <label class="chip"><input type="radio" name="q18"><span>Нейтрально</span></label>
+        </div>
+      </div>
+
+      <div class="field" data-label="17. Необходим ли в курсе глоссарий">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">17.</span>Необходим ли в курсе глоссарий</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Отдельный раздел с расшифровкой терминов и аббревиатур, используемых в курсе.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q19"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q19"><span>Нет</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SECTION 3 ================= -->
+  <div class="section" data-section-title="3. Проверка знаний">
+    <div class="section-head"><span class="section-num">03</span><span class="section-title">Проверка знаний</span></div>
+    <div class="glass section-card">
+
+      <div class="field" data-label="18. Необходимо ли итоговое тестирование">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">18.</span>Необходимо ли итоговое тестирование</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Тест в конце курса для проверки усвоения материала.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q20"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q20"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="field" data-label="19. Цель итогового тестирования">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">19.</span>Цель итогового тестирования</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Например, допуск к работе, оценка усвоения материала, статистика для руководителя.</div>
+        <div class="field-body"><textarea placeholder="Опишите цель тестирования"></textarea></div>
+      </div>
+
+      <div class="field" data-label="20. Количество вопросов в итоговом тестировании">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">20.</span>Количество вопросов в итоговом тестировании</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Ориентировочное количество вопросов в финальном тесте.</div>
+        <div class="field-body"><input type="number" min="0" placeholder="Например: 10"></div>
+      </div>
+
+      <div class="field" data-label="21. Типы тестовых вопросов и практических заданий">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">21.</span>Каковы типы тестовых вопросов и практических заданий</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Выберите форматы заданий, подходящие для проверки материала.</div>
+        <div class="field-body">
+          <div class="choice-group" style="margin-bottom:10px;">
+            <label class="chip"><input type="checkbox"><span>Один правильный ответ</span></label>
+            <label class="chip"><input type="checkbox"><span>Несколько правильных ответов</span></label>
+            <label class="chip"><input type="checkbox"><span>Сопоставление</span></label>
+            <label class="chip"><input type="checkbox"><span>Заполнение пропусков</span></label>
+            <label class="chip"><input type="checkbox"><span>Открытый вопрос</span></label>
+            <label class="chip"><input type="checkbox"><span>Практический кейс</span></label>
+          </div>
+          <input type="text" placeholder="Другое (если есть)">
+        </div>
+      </div>
+
+      <div class="field" data-label="22. Требуется ли промежуточное тестирование">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">22.</span>Требуется ли промежуточное тестирование</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Мини-проверки после каждого раздела/главы курса, а не только в конце.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q24"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q24"><span>Нет</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SECTION 4 ================= -->
+  <div class="section" data-section-title="4. Дизайн">
+    <div class="section-head"><span class="section-num">04</span><span class="section-title">Дизайн</span></div>
+    <div class="glass section-card">
+
+      <div class="field" data-label="23. Есть ли готовые иллюстрации или плеер к курсу">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">23.</span>Есть ли готовые иллюстрации или плеер к курсу, которые необходимо использовать</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Готовый визуальный контент или интерфейс плеера, который нужно встроить, а не создавать заново.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q25"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q25"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="field" data-label="24. Перечень готовых иллюстраций и элементов курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">24.</span>Перечислите готовые иллюстрации и элементы к курсу, если они есть (кнопки, иконки, меню и т.д.)</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Что уже подготовлено вашей стороной и когда вы сможете это передать разработчику.</div>
+        <div class="field-body">
+          <textarea placeholder="Перечислите готовые элементы" style="margin-bottom:12px;"></textarea>
+          <input type="text" placeholder="Срок предоставления (если есть)">
+        </div>
+      </div>
+
+      <div class="field" data-label="25. Стиль курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">25.</span>Какой стиль должен быть у курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Общее визуальное и эмоциональное впечатление, которое должен производить курс.</div>
+        <div class="field-body">
+          <div class="choice-group" style="margin-bottom:10px;">
+            <label class="chip"><input type="checkbox"><span>Строгий / деловой</span></label>
+            <label class="chip"><input type="checkbox"><span>Дружелюбный</span></label>
+            <label class="chip"><input type="checkbox"><span>Минималистичный</span></label>
+            <label class="chip"><input type="checkbox"><span>Иллюстративный</span></label>
+          </div>
+          <input type="text" placeholder="Другое (если есть)">
+        </div>
+      </div>
+
+      <div class="field" data-label="26. Использование брендбука в курсе">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">26.</span>Использование брендбука в курсе</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Нужно ли строго следовать фирменному стилю компании — цвета, шрифты, логотип.</div>
+        <div class="field-body">
+          <div class="choice-group" style="margin-bottom:10px;">
+            <label class="chip"><input type="radio" name="q28"><span>Да</span></label>
+            <label class="chip"><input type="radio" name="q28"><span>Нет</span></label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SECTION 5 ================= -->
+  <div class="section" data-section-title="5. Вёрстка электронного курса">
+    <div class="section-head"><span class="section-num">05</span><span class="section-title">Вёрстка электронного курса</span></div>
+    <div class="glass section-card">
+
+      <div class="field" data-label="27. Возможность навигации по главам через интерактивное меню">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">27.</span>Может ли пользователь перемещаться по главам/разделам при помощи интерактивного меню</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Свободная навигация по курсу или строго последовательное прохождение.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q30"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q30"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="field" data-label="28. Требуется ли инструкция по навигации">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">28.</span>Требуется ли инструкция по навигации</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Отдельный экран/раздел с объяснением, как пользоваться интерфейсом курса.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q31"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q31"><span>Нет</span></label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SECTION 6 ================= -->
+  <div class="section" data-section-title="6. Видео/аудио">
+    <div class="section-head"><span class="section-num">06</span><span class="section-title">Видео / аудио</span></div>
+    <div class="glass section-card">
+
+      <div class="field" data-label="29. Требуется ли аудиосопровождение курса">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">29.</span>Требуется ли аудиосопровождение курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Дикторская озвучка текста или отдельных элементов курса.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q29"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q29"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="field conditional-field" data-label="30. Как активизируется аудиосопровождение курса" data-conditional="audio">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">30.</span>Как активизируется аудиосопровождение курса</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Запускается ли звук автоматически при открытии слайда или только по действию пользователя.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q30"><span>Автоматически</span></label>
+          <label class="chip"><input type="radio" name="q30"><span>По клику пользователя</span></label>
+        </div>
+      </div>
+
+      <div class="field conditional-field" data-label="31. Что в курсе сопровождается аудиозаписью" data-conditional="audio">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">31.</span>Что в курсе сопровождается аудиозаписью</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Например, весь текст, только ключевые моменты, разбор кейсов и т.д.</div>
+        <div class="field-body"><textarea placeholder="Опишите, что сопровождается аудио"></textarea></div>
+      </div>
+
+      <div class="field" data-label="32. Планируются в курсе видеоматериалы">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">32.</span>Планируются в курсе видеоматериалы</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Использование видеовставок — интервью, демонстрации процессов и т.д.</div>
+        <div class="field-body choice-group">
+          <label class="chip"><input type="radio" name="q32"><span>Да</span></label>
+          <label class="chip"><input type="radio" name="q32"><span>Нет</span></label>
+        </div>
+      </div>
+
+      <div class="field conditional-field" data-label="33. Формат видеоматериалов и продолжительность" data-conditional="video">
+        <div class="field-head">
+          <div class="field-label"><span class="qn">33.</span>Уточните формат видеоматериалов и продолжительность</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span class="optional-tag">не обязательно</span><button class="hint-btn" type="button">?</button></div>
+        </div>
+        <div class="hint-text">Например, формат — говорящая голова / скринкаст / анимация; продолжительность — в минутах на один ролик.</div>
+        <div class="field-body row2">
+          <input type="text" placeholder="Формат видео">
+          <input type="text" placeholder="Продолжительность">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="downloadPdf">Скачать бриф в Word</button>
+    <button class="btn btn-ghost" id="clearForm">Очистить форму</button>
+  </div>
+
+  <footer>Бриф на разработку электронного курса · заполните удобные вам поля</footer>
+</div>
+
+
+<script>
+  /* ---------- THEME ---------- */
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeToggle');
+  const iconMoon = document.getElementById('iconMoon');
+  const iconSun = document.getElementById('iconSun');
+  function applyThemeIcons(){
+    const t = root.getAttribute('data-theme');
+    iconMoon.style.display = t === 'dark' ? 'block' : 'none';
+    iconSun.style.display = t === 'light' ? 'block' : 'none';
+  }
+  applyThemeIcons();
+
+  themeBtn.addEventListener('click', () => {
+    const t = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', t);
+    applyThemeIcons();
+  });
+
+  /* ---------- HINTS ---------- */
+  document.querySelectorAll('.hint-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const hint = btn.closest('.field-head').nextElementSibling;
+      hint.classList.toggle('open');
+    });
+  });
+
+  /* ---------- CONDITIONAL FIELDS ---------- */
+  function updateConditionalFields(){
+    const audioYes = document.querySelector('input[name="q29"]:checked')?.nextElementSibling?.textContent.trim() === 'Да';
+    const videoYes = document.querySelector('input[name="q32"]:checked')?.nextElementSibling?.textContent.trim() === 'Да';
+
+    document.querySelectorAll('[data-conditional="audio"]').forEach(el=>{
+      el.classList.toggle('visible', audioYes);
+    });
+    document.querySelectorAll('[data-conditional="video"]').forEach(el=>{
+      el.classList.toggle('visible', videoYes);
+    });
+
+    if(!audioYes){
+      document.querySelectorAll('[data-conditional="audio"] input, [data-conditional="audio"] textarea').forEach(el=>el.value='');
+      document.querySelectorAll('[data-conditional="audio"] input[type="radio"], [data-conditional="audio"] input[type="checkbox"]').forEach(el=>el.checked=false);
+    }
+    if(!videoYes){
+      document.querySelectorAll('[data-conditional="video"] input, [data-conditional="video"] textarea').forEach(el=>el.value='');
+      document.querySelectorAll('[data-conditional="video"] input[type="radio"], [data-conditional="video"] input[type="checkbox"]').forEach(el=>el.checked=false);
+    }
+  }
+
+  document.querySelectorAll('input[name="q29"], input[name="q32"]').forEach(el=>{
+    el.addEventListener('change', ()=>{
+      updateConditionalFields();
+      computeProgress();
+    });
+  });
+  updateConditionalFields();
+
+  /* ---------- PROGRESS ---------- */
+  const allFieldEls = () => Array.from(document.querySelectorAll('input[type=text], input[type=date], input[type=number], textarea')).filter(el => { const field = el.closest('.field'); return !field || getComputedStyle(field).display !== 'none'; });
+  const allChoiceGroups = () => document.querySelectorAll('.choice-group');
+
+  function computeProgress(){
+    let total = 0, filled = 0;
+    allFieldEls().forEach(el=>{
+      total++;
+      if(el.value && el.value.trim() !== '') filled++;
+    });
+    // count each choice-group as one "field"
+    document.querySelectorAll('.field').forEach(f=>{
+      if(getComputedStyle(f).display === 'none') return;
+      const group = f.querySelector('.choice-group');
+      if(group){
+        total++;
+        if(group.querySelector('input:checked')) filled++;
+      }
+    });
+    const pct = total ? Math.round((filled/total)*100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressNum').textContent = pct + '%';
+  }
+  document.addEventListener('input', computeProgress);
+  document.addEventListener('change', computeProgress);
+  computeProgress();
+
+  /* ---------- CLEAR ---------- */
+  document.getElementById('clearForm').addEventListener('click', ()=>{
+    if(!confirm('Очистить все заполненные поля брифа?')) return;
+    allFieldEls().forEach(el=> el.value = '');
+    document.querySelectorAll('input[type=checkbox], input[type=radio]').forEach(el=> el.checked = false);
+    computeProgress();
+  });
+
+  /* ---------- WORD (.docx) EXPORT ---------- */
+  function fieldValue(fieldEl){
+    const parts = [];
+    const checked = fieldEl.querySelectorAll('.choice-group input:checked');
+    checked.forEach(c=> parts.push(c.nextElementSibling.textContent.trim()));
+    const inputsAndAreas = fieldEl.querySelectorAll('.field-body input[type=text], .field-body input[type=number], .field-body input[type=date], .field-body textarea');
+    inputsAndAreas.forEach(el=>{
+      if(el.value && el.value.trim() !== '') parts.push(el.value.trim());
+    });
+    return parts.length ? parts.join('; ') : '—';
+  }
+
+  function escapeXml(str){
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[m]));
+  }
+
+  function wRun(text, opts){
+    opts = opts || {};
+    let rPr = '<w:rPr>';
+    if(opts.b) rPr += '<w:b/><w:bCs/>';
+    if(opts.col) rPr += '<w:color w:val="' + opts.col + '"/>';
+    if(opts.sz) rPr += '<w:sz w:val="' + opts.sz + '"/><w:szCs w:val="' + opts.sz + '"/>';
+    rPr += '</w:rPr>';
+    const parts = String(text).split('\n');
+    let inner = '';
+    parts.forEach((p, i) => {
+      if(i > 0) inner += '<w:br/>';
+      inner += '<w:t xml:space="preserve">' + escapeXml(p) + '</w:t>';
+    });
+    return '<w:r>' + rPr + inner + '</w:r>';
+  }
+
+  function wPara(runs, opts){
+    opts = opts || {};
+    let pPr = '';
+    if(opts.after != null) pPr += '<w:spacing w:after="' + opts.after + '"/>';
+    if(opts.align) pPr += '<w:jc w:val="' + opts.align + '"/>';
+    pPr = pPr ? '<w:pPr>' + pPr + '</w:pPr>' : '';
+    return '<w:p>' + pPr + runs + '</w:p>';
+  }
+
+  function wBorders(color){
+    let b = '';
+    ['top','left','bottom','right'].forEach(side => {
+      b += '<w:' + side + ' w:val="single" w:color="' + color + '" w:sz="4"/>';
+    });
+    return '<w:tcBorders>' + b + '</w:tcBorders>';
+  }
+
+  function wCell(content, opts){
+    opts = opts || {};
+    let tcPr = '<w:tcPr>';
+    if(opts.span) tcPr += '<w:gridSpan w:val="' + opts.span + '"/>';
+    if(opts.wPct) tcPr += '<w:tcW w:type="pct" w:w="' + opts.wPct + '%"/>';
+    tcPr += wBorders(opts.borderColor || 'E2E4E7');
+    if(opts.fill) tcPr += '<w:shd w:fill="' + opts.fill + '" w:val="clear"/>';
+    tcPr += '</w:tcPr>';
+    return '<w:tc>' + tcPr + content + '</w:tc>';
+  }
+
+  function wRow(cells, header){
+    return '<w:tr>' + (header ? '<w:trPr><w:tblHeader/></w:trPr>' : '') + cells + '</w:tr>';
+  }
+
+  const REQUESTER_FIELDS = ['ФИО заказчика','Должность заказчика','Структурное подразделение','Общество','Информация как связаться','Дата заполнения'];
+
+  function buildDocxDocument(){
+    let body = '';
+    body += wPara(wRun('Бриф на разработку электронного курса', {b:true, sz:30}), {after:120});
+    body += wPara(wRun('Данные заказчика', {b:true, sz:22}), {after:40});
+
+    REQUESTER_FIELDS.forEach(label => {
+      const el = document.querySelector('input[data-label="' + label + '"]');
+      let value = el ? el.value.trim() : '';
+      if(label === 'Дата заполнения' && value){
+        const parts = value.split('-');
+        if(parts.length === 3) value = parts[2] + '.' + parts[1] + '.' + parts[0];
+      }
+      body += wPara(wRun(label + ': ', {b:true, sz:20}) + wRun(value || '—', {sz:20}), {after:40});
+    });
+    body += wPara(wRun('Дата выгрузки: ' + new Date().toLocaleDateString('ru-RU'), {sz:20}), {after:160});
+
+    let rows = '';
+    rows += wRow(
+      wCell(wPara(wRun('№', {b:true, col:'FFFFFF', sz:20})), {wPct:6, fill:'50BBB4'})
+      + wCell(wPara(wRun('Вопрос', {b:true, col:'FFFFFF', sz:20})), {wPct:44, fill:'50BBB4'})
+      + wCell(wPara(wRun('Ответ', {b:true, col:'FFFFFF', sz:20})), {wPct:50, fill:'50BBB4'})
+    , true);
+
+    document.querySelectorAll('.section').forEach(section => {
+      const title = section.getAttribute('data-section-title') || '';
+      rows += wRow(wCell(wPara(wRun(title, {b:true, col:'20232A', sz:22})), {span:3, fill:'F1F3F4'}));
+      section.querySelectorAll('.field').forEach(f => {
+        if(getComputedStyle(f).display === 'none') return;
+        const raw = f.getAttribute('data-label') || '';
+        const m = raw.match(/^(\d+)\.\s*(.*)$/);
+        const num = m ? m[1] : '';
+        const text = m ? m[2] : raw;
+        const val = fieldValue(f);
+        rows += wRow(
+          wCell(wPara(wRun(num, {b:true, col:'50BBB4', sz:20})), {wPct:6})
+          + wCell(wPara(wRun(text, {b:true, col:'111318', sz:20})), {wPct:44})
+          + wCell(wPara(wRun(val, {col:'333333', sz:20})), {wPct:50})
+        );
+      });
+    });
+
+    const borders = ['top','left','bottom','right','insideH','insideV'].map(s => '<w:' + s + ' w:val="single" w:color="auto" w:sz="4"/>').join('');
+    const tbl = '<w:tbl><w:tblPr><w:tblW w:type="pct" w:w="100%"/><w:tblBorders>' + borders + '</w:tblBorders></w:tblPr>'
+      + '<w:tblGrid><w:gridCol w:w="100"/><w:gridCol w:w="100"/><w:gridCol w:w="100"/></w:tblGrid>' + rows + '</w:tbl>';
+
+    const sectPr = '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr>';
+
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+      + body + tbl + sectPr + '</w:body></w:document>';
+  }
+
+  function buildStylesXml(){
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+      + '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Montserrat" w:hAnsi="Montserrat" w:cs="Montserrat"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr></w:rPrDefault>'
+      + '<w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>'
+      + '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>'
+      + '</w:styles>';
+  }
+
+  function buildCoreXml(){
+    const iso = new Date().toISOString();
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+      + '<dc:title>Бриф на разработку электронного курса</dc:title>'
+      + '<dc:creator>Бриф</dc:creator>'
+      + '<cp:lastModifiedBy>Бриф</cp:lastModifiedBy>'
+      + '<dcterms:created xsi:type="dcterms:W3CDTF">' + iso + '</dcterms:created>'
+      + '<dcterms:modified xsi:type="dcterms:W3CDTF">' + iso + '</dcterms:modified>'
+      + '</cp:coreProperties>';
+  }
+
+  function downloadDocx(){
+    const zip = new JSZip();
+    zip.file('[Content_Types].xml',
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+      + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+      + '<Default Extension="xml" ContentType="application/xml"/>'
+      + '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+      + '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'
+      + '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
+      + '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
+      + '</Types>');
+    zip.folder('_rels').file('.rels',
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+      + '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>'
+      + '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>'
+      + '</Relationships>');
+    const word = zip.folder('word');
+    word.file('document.xml', buildDocxDocument());
+    word.file('styles.xml', buildStylesXml());
+    word.folder('_rels').file('document.xml.rels',
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+      + '</Relationships>');
+    const props = zip.folder('docProps');
+    props.file('core.xml', buildCoreXml());
+    props.file('app.xml',
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Brief</Application></Properties>');
+
+    return zip.generateAsync({
+      type: 'blob',
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      compression: 'DEFLATE'
+    });
+  }
+
+  document.getElementById('downloadPdf').addEventListener('click', function(){
+    const btn = this;
+    const original = btn.textContent;
+    btn.textContent = 'Готовим Word…';
+    btn.disabled = true;
+    const restore = () => { btn.textContent = original; btn.disabled = false; };
+
+    downloadDocx().then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'brief_' + new Date().toISOString().slice(0,10) + '.docx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      restore();
+    }).catch(err => {
+      console.error(err);
+      alert('Не удалось сформировать Word-документ.');
+      restore();
+    });
+  });
+</script>
+</body>
+</html>
